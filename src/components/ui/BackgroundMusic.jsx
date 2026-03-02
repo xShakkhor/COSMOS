@@ -9,33 +9,56 @@ export function useBackgroundMusic() {
   const [isPlaying, setIsPlaying] = useState(false)
   const [isLoaded, setIsLoaded] = useState(false)
   const [volume, setVolume] = useState(0.5)
+  const [error, setError] = useState(null)
 
   useEffect(() => {
-    audioRef.current = new Audio(MUSIC_URL)
-    audioRef.current.loop = true
-    audioRef.current.volume = volume
+    const audio = new Audio(MUSIC_URL)
+    audio.loop = true
+    audio.volume = volume
     
-    audioRef.current.addEventListener('canplaythrough', () => setIsLoaded(true))
-    audioRef.current.addEventListener('ended', () => setIsPlaying(false))
+    const handleCanPlay = () => {
+      setIsLoaded(true)
+      setError(null)
+    }
+    
+    const handleError = (e) => {
+      console.error('Audio load error:', e)
+      setError('Failed to load music')
+      setIsLoaded(false)
+    }
+    
+    const handleEnded = () => setIsPlaying(false)
+    
+    audio.addEventListener('canplaythrough', handleCanPlay)
+    audio.addEventListener('error', handleError)
+    audio.addEventListener('ended', handleEnded)
+    
+    audioRef.current = audio
     
     return () => {
-      if (audioRef.current) {
-        audioRef.current.pause()
-        audioRef.current = null
-      }
+      audio.pause()
+      audio.removeEventListener('canplaythrough', handleCanPlay)
+      audio.removeEventListener('error', handleError)
+      audio.removeEventListener('ended', handleEnded)
     }
   }, [])
 
   const togglePlay = useCallback(() => {
-    if (!audioRef.current || !isLoaded) return
+    const audio = audioRef.current
+    if (!audio) return
     
     if (isPlaying) {
-      audioRef.current.pause()
+      audio.pause()
+      setIsPlaying(false)
     } else {
-      audioRef.current.play().catch(e => console.log('Play error:', e))
+      audio.play()
+        .then(() => setIsPlaying(true))
+        .catch(e => {
+          console.error('Play error:', e)
+          setError('Click to enable audio')
+        })
     }
-    setIsPlaying(!isPlaying)
-  }, [isPlaying, isLoaded])
+  }, [isPlaying])
 
   const setAudioVolume = useCallback((v) => {
     setVolume(v)
@@ -48,6 +71,7 @@ export function useBackgroundMusic() {
     isPlaying,
     isLoaded,
     volume,
+    error,
     togglePlay,
     setVolume: setAudioVolume
   }
@@ -57,7 +81,7 @@ export default function BackgroundMusic({ music }) {
   const [showControls, setShowControls] = useState(false)
 
   return (
-    <div className="absolute top-16 left-4 z-30">
+    <div className="absolute top-14 left-4 z-30">
       <AnimatePresence>
         {showControls && music.isLoaded && (
           <motion.div
@@ -110,14 +134,11 @@ export default function BackgroundMusic({ music }) {
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
         onClick={() => {
-          if (!music.isLoaded) {
-            alert('Loading music... Click again once loaded.')
-          }
           setShowControls(!showControls)
           music.togglePlay()
         }}
         className="glass-panel w-10 h-10 flex items-center justify-center hover:bg-cosmic-violet/30 transition-colors relative"
-        title="Background Music"
+        title={music.error || "Background Music"}
       >
         {music.isPlaying ? (
           <Music2 size={18} className="text-cosmic-violet animate-pulse" />

@@ -200,16 +200,16 @@ function App() {
   }, [isExplored])
 
   return (
-    <div className="w-full h-full relative flex items-center justify-center p-4 pt-16 pb-20">
+    <div className="w-full h-full relative flex items-center justify-center p-2 pt-14 pb-16">
       <Header soundEffects={soundEffects} music={backgroundMusic} />
       
-      <div className="relative w-full h-full max-w-[1800px] max-h-[1000px]">
-        <div className="absolute inset-0 rounded-2xl border-2 border-cosmic-violet/30 shadow-[0_0_30px_rgba(124,58,237,0.3),inset_0_0_30px_rgba(124,58,237,0.1)] pointer-events-none z-20"></div>
-        <div className="absolute inset-2 rounded-xl border border-cyan-nebula/20 shadow-[0_0_20px_rgba(6,182,212,0.2)] pointer-events-none z-20"></div>
-        <div className="absolute top-0 left-0 w-8 h-8 border-l-2 border-t-2 border-cosmic-violet rounded-tl-lg z-20"></div>
-        <div className="absolute top-0 right-0 w-8 h-8 border-r-2 border-t-2 border-cosmic-violet rounded-tr-lg z-20"></div>
-        <div className="absolute bottom-0 left-0 w-8 h-8 border-l-2 border-b-2 border-cosmic-violet rounded-bl-lg z-20"></div>
-        <div className="absolute bottom-0 right-0 w-8 h-8 border-r-2 border-b-2 border-cosmic-violet rounded-br-lg z-20"></div>
+      <div className="relative w-full h-full max-w-[1400px] max-h-[800px]">
+        <div className="absolute inset-0 rounded-xl border border-cosmic-violet/40 shadow-[0_0_20px_rgba(124,58,237,0.4),inset_0_0_20px_rgba(124,58,237,0.15)] pointer-events-none z-20"></div>
+        <div className="absolute inset-[3px] rounded-lg border border-cyan-nebula/30 shadow-[0_0_15px_rgba(6,182,212,0.25)] pointer-events-none z-20"></div>
+        <div className="absolute top-0 left-0 w-5 h-5 border-l border-t border-cosmic-violet rounded-tl z-20"></div>
+        <div className="absolute top-0 right-0 w-5 h-5 border-r border-t border-cosmic-violet rounded-tr z-20"></div>
+        <div className="absolute bottom-0 left-0 w-5 h-5 border-l border-b border-cosmic-violet rounded-bl z-20"></div>
+        <div className="absolute bottom-0 right-0 w-5 h-5 border-r border-b border-cosmic-violet rounded-br z-20"></div>
         
         <div className="absolute inset-0 rounded-xl overflow-hidden bg-space-black">
           <Canvas

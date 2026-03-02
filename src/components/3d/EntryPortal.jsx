@@ -2,6 +2,7 @@ import { useRef, useMemo, useEffect, useState } from 'react'
 import { useFrame } from '@react-three/fiber'
 import { Html, Float } from '@react-three/drei'
 import gsap from 'gsap'
+import { motion } from 'framer-motion'
 import { usePortfolioStore } from '../../store/usePortfolioStore'
 import { portfolioData } from '../../data/content'
 import * as THREE from 'three'
@@ -156,13 +157,18 @@ export default function EntryPortal({ onComplete }) {
             </p>
             
             {showButton && (
-              <button
+              <motion.button
                 onClick={handleEnter}
-                className="pointer-events-auto px-8 py-3 bg-cosmic-violet/20 border border-cosmic-violet rounded-full text-text-white hover:bg-cosmic-violet/40 transition-all duration-300 animate-pulse-glow"
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.95 }}
+                className="pointer-events-auto mt-4 px-10 py-4 bg-gradient-to-r from-cosmic-violet to-cyan-nebula border-2 border-white/30 rounded-full text-white font-bold text-lg shadow-[0_0_30px_rgba(124,58,237,0.6),0_0_60px_rgba(6,182,212,0.4)] hover:shadow-[0_0_40px_rgba(124,58,237,0.8),0_0_80px_rgba(6,182,212,0.6)] transition-all duration-300"
                 style={{ fontFamily: 'Space Grotesk' }}
               >
                 ENTER THE VOID
-              </button>
+                <span className="ml-2">🚀</span>
+              </motion.button>
             )}
           </div>
         </Html>
