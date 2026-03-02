@@ -8,6 +8,7 @@ import SpaceRadar from './components/ui/SpaceRadar'
 import StatsMonitor from './components/ui/StatsMonitor'
 import ScreenshotButton from './components/ui/ScreenshotButton'
 import BackgroundMusic, { useBackgroundMusic } from './components/ui/BackgroundMusic'
+import UserInfoPanel from './components/ui/UserInfoPanel'
 import EntryPortal from './components/3d/EntryPortal'
 import { ZoomIn, ZoomOut, RotateCcw, Volume2, VolumeX, Music, Music2 } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
@@ -250,6 +251,7 @@ function App() {
         <SpaceRadar />
         <StatsMonitor />
         <ScreenshotButton />
+        <UserInfoPanel />
         <BackgroundMusic music={backgroundMusic} />
       </div>
     </div>
