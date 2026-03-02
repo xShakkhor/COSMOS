@@ -7,6 +7,7 @@ import HUD from './components/ui/HUD'
 import SpaceRadar from './components/ui/SpaceRadar'
 import StatsMonitor from './components/ui/StatsMonitor'
 import ScreenshotButton from './components/ui/ScreenshotButton'
+import BackgroundMusic, { useBackgroundMusic } from './components/ui/BackgroundMusic'
 import EntryPortal from './components/3d/EntryPortal'
 import { ZoomIn, ZoomOut, RotateCcw, Volume2, VolumeX } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
@@ -141,6 +142,7 @@ function App() {
   const [isMobile, setIsMobile] = useState(false)
   const wheelTimeout = useRef(null)
   const soundEffects = useSoundEffects()
+  const backgroundMusic = useBackgroundMusic()
 
   useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth < 768)
@@ -219,6 +221,7 @@ function App() {
         <SpaceRadar />
         <StatsMonitor />
         <ScreenshotButton />
+        <BackgroundMusic music={backgroundMusic} />
       </div>
     </div>
   )
