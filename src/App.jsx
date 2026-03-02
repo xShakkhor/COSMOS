@@ -9,7 +9,7 @@ import StatsMonitor from './components/ui/StatsMonitor'
 import ScreenshotButton from './components/ui/ScreenshotButton'
 import BackgroundMusic, { useBackgroundMusic } from './components/ui/BackgroundMusic'
 import EntryPortal from './components/3d/EntryPortal'
-import { ZoomIn, ZoomOut, RotateCcw, Volume2, VolumeX } from 'lucide-react'
+import { ZoomIn, ZoomOut, RotateCcw, Volume2, VolumeX, Music, Music2 } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useSoundEffects } from './hooks/useSoundEffects'
 
@@ -71,7 +71,7 @@ function SignalIndicator() {
   )
 }
 
-function Header({ soundEffects }) {
+function Header({ soundEffects, music }) {
   const { zoom, zoomIn, zoomOut, resetToEntry, isExplored } = usePortfolioStore()
 
   return (
@@ -90,6 +90,35 @@ function Header({ soundEffects }) {
 
         {isExplored && (
           <div className="flex items-center gap-3">
+            {/* Background Music Control */}
+            <div className="flex items-center gap-2 glass-panel px-3 py-1.5">
+              <button
+                onClick={() => music.togglePlay()}
+                className="flex items-center justify-center hover:text-cosmic-violet transition-colors"
+                title={music.isPlaying ? 'Pause Music' : 'Play Music'}
+              >
+                {music.isPlaying ? (
+                  <Music2 size={16} className="text-cosmic-violet animate-pulse" />
+                ) : (
+                  <Music size={16} className="text-muted-slate" />
+                )}
+              </button>
+              <input
+                type="range"
+                min="0"
+                max="1"
+                step="0.1"
+                value={music.volume}
+                onChange={(e) => music.setVolume(parseFloat(e.target.value))}
+                className="w-16 h-1 bg-white/20 rounded-lg appearance-none cursor-pointer accent-cosmic-violet"
+                title={`Volume: ${Math.round(music.volume * 100)}%`}
+              />
+              <span className="text-xs text-cyan-nebula font-mono w-8">
+                {Math.round(music.volume * 100)}%
+              </span>
+            </div>
+            
+            {/* Sound Effects Toggle */}
             <button
               onClick={() => {
                 soundEffects.toggleMute()
@@ -172,7 +201,7 @@ function App() {
 
   return (
     <div className="w-full h-full relative flex items-center justify-center p-4 pt-16 pb-20">
-      <Header soundEffects={soundEffects} />
+      <Header soundEffects={soundEffects} music={backgroundMusic} />
       
       <div className="relative w-full h-full max-w-[1800px] max-h-[1000px]">
         <div className="absolute inset-0 rounded-2xl border-2 border-cosmic-violet/30 shadow-[0_0_30px_rgba(124,58,237,0.3),inset_0_0_30px_rgba(124,58,237,0.1)] pointer-events-none z-20"></div>

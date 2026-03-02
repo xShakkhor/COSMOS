@@ -8,7 +8,7 @@ export function useBackgroundMusic() {
   const audioRef = useRef(null)
   const [isPlaying, setIsPlaying] = useState(false)
   const [isLoaded, setIsLoaded] = useState(false)
-  const [volume, setVolume] = useState(0.3)
+  const [volume, setVolume] = useState(0.5)
 
   useEffect(() => {
     audioRef.current = new Audio(MUSIC_URL)
