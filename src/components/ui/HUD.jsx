@@ -12,6 +12,21 @@ const navItems = [
 export default function HUD() {
   const { currentSection, setCurrentSection } = usePortfolioStore()
 
+  const handleNavClick = (id) => {
+    setCurrentSection(id)
+    const audio = new (window.AudioContext || window.webkitAudioContext)()
+    const oscillator = audio.createOscillator()
+    const gainNode = audio.createGain()
+    oscillator.connect(gainNode)
+    gainNode.connect(audio.destination)
+    oscillator.frequency.setValueAtTime(600, audio.currentTime)
+    oscillator.type = 'sine'
+    gainNode.gain.setValueAtTime(0.05, audio.currentTime)
+    gainNode.gain.exponentialRampToValueAtTime(0.001, audio.currentTime + 0.1)
+    oscillator.start(audio.currentTime)
+    oscillator.stop(audio.currentTime + 0.1)
+  }
+
   return (
     <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-50">
       <motion.div 
@@ -23,7 +38,7 @@ export default function HUD() {
         {navItems.map((item, index) => (
           <button
             key={item.id}
-            onClick={() => setCurrentSection(item.id)}
+            onClick={() => handleNavClick(item.id)}
             className="relative px-3 py-1 text-sm font-mono transition-all duration-300"
             style={{
               color: currentSection === item.id ? item.color : '#94A3B8',

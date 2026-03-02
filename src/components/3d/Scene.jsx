@@ -3,6 +3,7 @@ import { useThree, useFrame } from '@react-three/fiber'
 import { OrbitControls } from '@react-three/drei'
 import { usePortfolioStore } from '../../store/usePortfolioStore'
 import StarField from './StarField'
+import CometEffects from './CometEffects'
 import AboutPlanet from './AboutPlanet'
 import SkillsNebula from './SkillsNebula'
 import ProjectSystem from './ProjectSystem'
@@ -64,6 +65,7 @@ export default function Scene() {
   return (
     <>
       <StarField count={isMobile ? 2000 : 5000} />
+      <CometEffects count={isMobile ? 4 : 8} />
       
       <ambientLight intensity={0.2} />
       <pointLight position={[10, 10, 10]} intensity={1} color="#7C3AED" />
