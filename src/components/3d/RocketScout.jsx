@@ -3,7 +3,7 @@ import { useFrame } from '@react-three/fiber'
 import { Html } from '@react-three/drei'
 import * as THREE from 'three'
 
-export default function RocketScout({ radius = 9, speed = 0.35 }) {
+export default function RocketScout({ radius = 5.5, speed = 0.35, scale = 2.4 }) {
   const rocketRef = useRef()
   const flameRef = useRef()
 
@@ -12,8 +12,8 @@ export default function RocketScout({ radius = 9, speed = 0.35 }) {
 
     const t = state.clock.elapsedTime * speed
     const x = Math.cos(t) * radius
-    const z = Math.sin(t) * radius
-    const y = Math.sin(t * 1.4) * 1.2
+    const z = Math.sin(t) * radius * 0.7 + 2.5
+    const y = Math.sin(t * 1.4) * 1.2 + 0.8
 
     rocketRef.current.position.set(x, y, z)
     rocketRef.current.lookAt(x + Math.cos(t + 0.2), y, z + Math.sin(t + 0.2))
@@ -24,7 +24,7 @@ export default function RocketScout({ radius = 9, speed = 0.35 }) {
   })
 
   return (
-    <group ref={rocketRef}>
+    <group ref={rocketRef} scale={scale}>
       <mesh>
         <coneGeometry args={[0.18, 0.45, 16]} />
         <meshStandardMaterial color="#E2E8F0" metalness={0.75} roughness={0.28} />
@@ -54,7 +54,17 @@ export default function RocketScout({ radius = 9, speed = 0.35 }) {
         />
       </mesh>
 
-      <pointLight position={[0, -0.55, 0]} intensity={0.45} color="#06B6D4" distance={3.5} />
+      <mesh position={[0, -0.86, 0]}>
+        <cylinderGeometry args={[0.045, 0.09, 0.48, 10]} />
+        <meshBasicMaterial
+          color="#38BDF8"
+          transparent
+          opacity={0.5}
+          blending={THREE.AdditiveBlending}
+        />
+      </mesh>
+
+      <pointLight position={[0, -0.55, 0]} intensity={1.25} color="#06B6D4" distance={6} />
 
       <Html position={[0, 0.5, 0]} center distanceFactor={12}>
         <div className="rounded-full border border-cyan-nebula/30 bg-space-black/70 px-2 py-1 text-[10px] font-mono tracking-wider text-cyan-nebula">
