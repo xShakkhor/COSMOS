@@ -18,7 +18,7 @@ function ProjectMoon({ project, index, total, selectedSkillCategory }) {
   const meshRef = useRef()
   const [hovered, setHovered] = useState(false)
   const [showDetails, setShowDetails] = useState(false)
-  const { markMissionStep } = usePortfolioStore()
+  const { markMissionStep, openDeepZoomProject } = usePortfolioStore()
   const isLinked = projectMatchesCategory(project, selectedSkillCategory)
   const isDimmed = !!selectedSkillCategory && !isLinked
   
@@ -132,6 +132,13 @@ function ProjectMoon({ project, index, total, selectedSkillCategory }) {
                 GitHub
               </a>
             </div>
+
+            <button
+              onClick={() => openDeepZoomProject(project)}
+              className="mt-3 w-full rounded border border-cyan-nebula/40 bg-cyan-nebula/15 px-3 py-2 text-xs font-mono tracking-wider text-cyan-nebula hover:bg-cyan-nebula/25"
+            >
+              OPEN DEEP ZOOM SCENE
+            </button>
           </div>
         </Html>
       )}

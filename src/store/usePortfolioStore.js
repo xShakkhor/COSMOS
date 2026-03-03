@@ -7,6 +7,7 @@ export const usePortfolioStore = create((set) => ({
   cameraPosition: [0, 0, 20],
   zoom: 20,
   selectedSkillCategory: null,
+  deepZoomProject: null,
   mission: {
     aboutScanned: false,
     projectUnlocked: false,
@@ -20,6 +21,8 @@ export const usePortfolioStore = create((set) => ({
   setZoom: (zoom) => set({ zoom: Math.max(5, Math.min(40, zoom)) }),
   setSelectedSkillCategory: (category) => set({ selectedSkillCategory: category }),
   clearSelectedSkillCategory: () => set({ selectedSkillCategory: null }),
+  openDeepZoomProject: (project) => set({ deepZoomProject: project }),
+  closeDeepZoomProject: () => set({ deepZoomProject: null }),
   markMissionStep: (step) =>
     set((state) => ({
       mission: {

@@ -12,6 +12,7 @@ import CopilotTerminal from './components/ui/CopilotTerminal'
 import UniverseEvents from './components/ui/UniverseEvents'
 import CursorTrail from './components/ui/CursorTrail'
 import SkillConstellationPanel from './components/ui/SkillConstellationPanel'
+import ProjectDeepZoomScene from './components/ui/ProjectDeepZoomScene'
 import BackgroundMusic, { useBackgroundMusic } from './components/ui/BackgroundMusic'
 import UserInfoPanel from './components/ui/UserInfoPanel'
 import EntryPortal from './components/3d/EntryPortal'
@@ -293,6 +294,7 @@ function App() {
         {!isBlackout && <BackgroundMusic music={backgroundMusic} />}
         {!isBlackout && <CopilotTerminal />}
         <UniverseEvents onEventChange={setActiveEvent} />
+        <ProjectDeepZoomScene />
       </div>
       <CursorTrail preset={cursorPreset} />
     </div>
