@@ -5,12 +5,22 @@ import { portfolioData } from '../../data/content'
 import { usePortfolioStore } from '../../store/usePortfolioStore'
 import * as THREE from 'three'
 
-function ProjectMoon({ project, index, total }) {
+function projectMatchesCategory(project, category) {
+  if (!category) return true
+  const group = portfolioData.skills.find((item) => item.category === category)
+  if (!group) return false
+  const projectTech = project.tech.map((item) => item.toLowerCase())
+  return group.skills.some((skill) => projectTech.includes(skill.toLowerCase()))
+}
+
+function ProjectMoon({ project, index, total, selectedSkillCategory }) {
   const orbitRef = useRef()
   const meshRef = useRef()
   const [hovered, setHovered] = useState(false)
   const [showDetails, setShowDetails] = useState(false)
   const { markMissionStep } = usePortfolioStore()
+  const isLinked = projectMatchesCategory(project, selectedSkillCategory)
+  const isDimmed = !!selectedSkillCategory && !isLinked
   
   const orbitRadius = 4 + (index % 3) * 1.5
   const orbitSpeed = 0.2 + index * 0.05
@@ -51,11 +61,20 @@ function ProjectMoon({ project, index, total }) {
         <meshStandardMaterial
           color={project.color}
           emissive={project.color}
-          emissiveIntensity={hovered ? 0.5 : 0.2}
+          emissiveIntensity={isDimmed ? 0.05 : hovered || isLinked ? 0.6 : 0.2}
+          transparent
+          opacity={isDimmed ? 0.25 : 1}
           roughness={0.3}
           metalness={0.7}
         />
       </mesh>
+
+      {isLinked && selectedSkillCategory && (
+        <mesh>
+          <sphereGeometry args={[0.56, 24, 24]} />
+          <meshBasicMaterial color={project.color} transparent opacity={0.16} />
+        </mesh>
+      )}
       
       {hovered && (
         <Html position={[0, 0.8, 0]} center>
@@ -63,6 +82,11 @@ function ProjectMoon({ project, index, total }) {
             <span className="text-sm font-medium text-text-white">
               {project.title}
             </span>
+            {selectedSkillCategory && (
+              <div className={`mt-1 text-[10px] font-mono ${isLinked ? 'text-plasma-green' : 'text-muted-slate'}`}>
+                {isLinked ? `LINKED TO ${selectedSkillCategory.toUpperCase()}` : 'NO SKILL LINK'}
+              </div>
+            )}
           </div>
         </Html>
       )}
@@ -117,6 +141,7 @@ function ProjectMoon({ project, index, total }) {
 
 export default function ProjectSystem({ position, scale }) {
   const starRef = useRef()
+  const { selectedSkillCategory } = usePortfolioStore()
 
   useFrame((state) => {
     if (starRef.current) {
@@ -153,6 +178,7 @@ export default function ProjectSystem({ position, scale }) {
           project={project}
           index={index}
           total={portfolioData.projects.length}
+          selectedSkillCategory={selectedSkillCategory}
         />
       ))}
       

@@ -6,6 +6,7 @@ export const usePortfolioStore = create((set) => ({
   isExplored: false,
   cameraPosition: [0, 0, 20],
   zoom: 20,
+  selectedSkillCategory: null,
   mission: {
     aboutScanned: false,
     projectUnlocked: false,
@@ -17,6 +18,8 @@ export const usePortfolioStore = create((set) => ({
   setIsExplored: (explored) => set({ isExplored: explored }),
   setCameraPosition: (position) => set({ cameraPosition: position }),
   setZoom: (zoom) => set({ zoom: Math.max(5, Math.min(40, zoom)) }),
+  setSelectedSkillCategory: (category) => set({ selectedSkillCategory: category }),
+  clearSelectedSkillCategory: () => set({ selectedSkillCategory: null }),
   markMissionStep: (step) =>
     set((state) => ({
       mission: {

@@ -11,6 +11,7 @@ import MissionMode from './components/ui/MissionMode'
 import CopilotTerminal from './components/ui/CopilotTerminal'
 import UniverseEvents from './components/ui/UniverseEvents'
 import CursorTrail from './components/ui/CursorTrail'
+import SkillConstellationPanel from './components/ui/SkillConstellationPanel'
 import BackgroundMusic, { useBackgroundMusic } from './components/ui/BackgroundMusic'
 import UserInfoPanel from './components/ui/UserInfoPanel'
 import EntryPortal from './components/3d/EntryPortal'
@@ -288,6 +289,7 @@ function App() {
         {!isBlackout && <StatsMonitor />}
         {!isBlackout && <ScreenshotButton />}
         {!isBlackout && <UserInfoPanel />}
+        {!isBlackout && <SkillConstellationPanel />}
         {!isBlackout && <BackgroundMusic music={backgroundMusic} />}
         {!isBlackout && <CopilotTerminal />}
         <UniverseEvents onEventChange={setActiveEvent} />

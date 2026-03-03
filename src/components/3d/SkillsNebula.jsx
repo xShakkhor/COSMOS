@@ -2,10 +2,12 @@ import { useRef, useMemo, useState } from 'react'
 import { useFrame } from '@react-three/fiber'
 import { Html } from '@react-three/drei'
 import { portfolioData } from '../../data/content'
+import { usePortfolioStore } from '../../store/usePortfolioStore'
 import * as THREE from 'three'
 
-function ParticleCluster({ position, color, skills, index }) {
+function ParticleCluster({ position, color, skills, category, index }) {
   const pointsRef = useRef()
+  const { selectedSkillCategory, setSelectedSkillCategory } = usePortfolioStore()
   const clusterPosition = useMemo(() => {
     const theta = (index / 5) * Math.PI * 2
     const r = 3
@@ -42,13 +44,14 @@ function ParticleCluster({ position, color, skills, index }) {
   }, [color])
   
   const [hovered, setHovered] = useState(false)
+  const isSelected = selectedSkillCategory === category
   
   useFrame((state) => {
     if (pointsRef.current) {
       pointsRef.current.rotation.y = state.clock.elapsedTime * 0.1
       pointsRef.current.rotation.x = Math.sin(state.clock.elapsedTime * 0.05) * 0.1
       
-      const scale = hovered ? 1.5 : 1
+      const scale = isSelected ? 1.85 : hovered ? 1.5 : 1
       pointsRef.current.scale.lerp(
         new THREE.Vector3(scale, scale, scale),
         0.1
@@ -86,17 +89,23 @@ function ParticleCluster({ position, color, skills, index }) {
       <mesh
         onPointerOver={() => setHovered(true)}
         onPointerOut={() => setHovered(false)}
+        onClick={() => setSelectedSkillCategory(isSelected ? null : category)}
       >
         <sphereGeometry args={[0.1, 16, 16]} />
         <meshBasicMaterial color={color} />
       </mesh>
       
-      {hovered && (
+      {(hovered || isSelected) && (
         <Html distanceFactor={8}>
           <div className="glass-panel p-4 w-48 -mt-8">
             <h3 className="text-lg font-bold mb-2" style={{ color }}>
-              {portfolioData.skills[index].category}
+              {category}
             </h3>
+            {isSelected && (
+              <div className="mb-2 text-[10px] font-mono tracking-wider text-plasma-green">
+                CONSTELLATION LOCKED
+              </div>
+            )}
             <div className="flex flex-wrap gap-1">
               {skills.map((skill, i) => (
                 <span
@@ -131,6 +140,7 @@ export default function SkillsNebula({ position, scale }) {
           position={[0, 0, 0]}
           color={skillGroup.color}
           skills={skillGroup.skills}
+          category={skillGroup.category}
           index={index}
         />
       ))}
