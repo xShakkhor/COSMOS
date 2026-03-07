@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Globe, MapPin, Clock, Wifi, Monitor, Eye, EyeOff } from 'lucide-react'
+import { Globe, MapPin, Clock, Wifi, Monitor, X } from 'lucide-react'
 import { usePortfolioStore } from '../../store/usePortfolioStore'
 
 export default function UserInfoPanel() {
@@ -17,15 +17,8 @@ export default function UserInfoPanel() {
         const response = await fetch('https://ipapi.co/json/')
         const data = await response.json()
         setUserInfo(data)
-      } catch (error) {
-        setUserInfo({
-          ip: 'Unknown',
-          city: 'Unknown',
-          country: 'Unknown',
-          timezone: 'Unknown',
-          org: 'Unknown',
-          asn: 'Unknown'
-        })
+      } catch {
+        setUserInfo(null)
       }
       setLoading(false)
     }
@@ -60,15 +53,24 @@ export default function UserInfoPanel() {
     }
   }
 
+  const locationLabel = userInfo?.city && userInfo?.country
+    ? `${userInfo.city}, ${userInfo.country}`
+    : 'Location hidden'
+
+  const networkLabel = userInfo?.org || 'Secure relay unavailable'
+
   return (
     <>
-      <button
-        onClick={() => setIsVisible(!isVisible)}
-        className="absolute bottom-24 left-4 z-30 glass-panel w-10 h-10 flex items-center justify-center hover:bg-cosmic-violet/30 transition-colors"
-        title="User Info"
-      >
-        <Monitor size={18} className={isVisible ? 'text-cosmic-violet' : 'text-muted-slate'} />
-      </button>
+      {!isVisible && (
+        <button
+          onClick={() => setIsVisible(true)}
+          className="absolute bottom-24 left-4 z-30 glass-panel flex h-10 items-center gap-2 px-3 transition-colors hover:bg-cosmic-violet/20"
+          title="User Info"
+        >
+          <Monitor size={16} className="text-cosmic-violet" />
+          <span className="text-[10px] font-mono tracking-[0.18em] text-muted-slate">USER INFO</span>
+        </button>
+      )}
 
       <AnimatePresence>
         {isVisible && (
@@ -76,14 +78,26 @@ export default function UserInfoPanel() {
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -20 }}
-            className="absolute bottom-24 left-16 z-30 glass-panel p-4 w-64"
+            className="absolute bottom-24 left-4 z-30 w-72 glass-panel p-4"
           >
-            <div className="flex items-center justify-between mb-4">
+            <div className="mb-4 flex items-start justify-between gap-3">
               <div className="flex items-center gap-2">
                 <Globe size={16} className="text-cosmic-violet" />
-                <span className="text-sm font-mono text-gradient">USER INFO</span>
+                <div>
+                  <span className="text-sm font-mono text-gradient">USER INFO</span>
+                  <div className="mt-1 text-[10px] font-mono uppercase tracking-[0.18em] text-muted-slate">Ambient session details</div>
+                </div>
               </div>
-              <span className="text-xs text-muted-slate">{getTimeGreeting()}</span>
+              <div className="flex items-center gap-2">
+                <span className="text-xs text-muted-slate">{getTimeGreeting()}</span>
+                <button
+                  onClick={() => setIsVisible(false)}
+                  className="flex h-7 w-7 items-center justify-center rounded-full border border-white/10 bg-white/5 text-muted-slate transition-colors hover:border-cosmic-violet/40 hover:text-text-white"
+                  title="Hide user info"
+                >
+                  <X size={13} />
+                </button>
+              </div>
             </div>
 
             {loading ? (
@@ -92,25 +106,23 @@ export default function UserInfoPanel() {
               </div>
             ) : (
               <div className="space-y-3">
-                <div className="flex items-center gap-3 p-2 bg-white/5 rounded-lg">
+                <div className="flex items-center gap-3 rounded-xl border border-white/8 bg-white/5 p-3">
                   <Wifi size={14} className="text-plasma-green" />
                   <div>
                     <div className="text-xs text-muted-slate">IP Address</div>
-                    <div className="text-sm text-text-white font-mono">{userInfo?.ip || 'Loading...'}</div>
+                    <div className="text-sm font-mono text-text-white">{userInfo?.ip || 'Local relay masked'}</div>
                   </div>
                 </div>
 
-                <div className="flex items-center gap-3 p-2 bg-white/5 rounded-lg">
+                <div className="flex items-center gap-3 rounded-xl border border-white/8 bg-white/5 p-3">
                   <MapPin size={14} className="text-star-gold" />
                   <div>
                     <div className="text-xs text-muted-slate">Location</div>
-                    <div className="text-sm text-text-white">
-                      {userInfo?.city}, {userInfo?.country}
-                    </div>
+                    <div className="text-sm text-text-white">{locationLabel}</div>
                   </div>
                 </div>
 
-                <div className="flex items-center gap-3 p-2 bg-white/5 rounded-lg">
+                <div className="flex items-center gap-3 rounded-xl border border-white/8 bg-white/5 p-3">
                   <Clock size={14} className="text-cyan-nebula" />
                   <div>
                     <div className="text-xs text-muted-slate">Time</div>
@@ -123,15 +135,21 @@ export default function UserInfoPanel() {
                   </div>
                 </div>
 
-                <div className="flex items-center gap-3 p-2 bg-white/5 rounded-lg">
+                <div className="flex items-center gap-3 rounded-xl border border-white/8 bg-white/5 p-3">
                   <Monitor size={14} className="text-cosmic-violet" />
                   <div>
                     <div className="text-xs text-muted-slate">Network</div>
                     <div className="text-xs text-text-white truncate">
-                      {userInfo?.org || 'Unknown'}
+                      {networkLabel}
                     </div>
                   </div>
                 </div>
+
+                {!userInfo && (
+                  <div className="rounded-xl border border-dashed border-white/10 bg-space-black/30 px-3 py-2 text-[11px] leading-relaxed text-muted-slate">
+                    External geo lookup is unavailable, so this panel falls back to privacy-safe local placeholders.
+                  </div>
+                )}
               </div>
             )}
           </motion.div>

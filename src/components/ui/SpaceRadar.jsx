@@ -1,6 +1,7 @@
-import { useState, useEffect } from 'react'
+import { useMemo, useState } from 'react'
 import { usePortfolioStore } from '../../store/usePortfolioStore'
 import { motion, AnimatePresence } from 'framer-motion'
+import { Minus, Radar } from 'lucide-react'
 
 const sectionPositions = {
   about: { x: -30, y: 0, label: 'PLANET', color: '#7C3AED' },
@@ -12,19 +13,18 @@ const sectionPositions = {
 
 export default function SpaceRadar() {
   const { currentSection, setCurrentSection, isExplored } = usePortfolioStore()
-  const [radarPosition, setRadarPosition] = useState({ x: 50, y: 50 })
   const [isOpen, setIsOpen] = useState(true)
-
-  useEffect(() => {
-    if (!isExplored) return
-    
+  const radarPosition = useMemo(() => {
     const section = sectionPositions[currentSection]
-    if (section) {
-      const x = 50 + (section.x / 60) * 50
-      const y = 50 + (section.y / 60) * 50
-      setRadarPosition({ x, y })
+    if (!section) {
+      return { x: 50, y: 50 }
     }
-  }, [currentSection, isExplored])
+
+    return {
+      x: 50 + (section.x / 60) * 50,
+      y: 50 + (section.y / 60) * 50,
+    }
+  }, [currentSection])
 
   if (!isExplored) return null
 
@@ -36,10 +36,20 @@ export default function SpaceRadar() {
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.8 }}
-            className="glass-panel p-3"
+            className="glass-panel w-36 p-3"
           >
-            <div className="text-xs text-muted-slate font-mono mb-2 text-center">
-              SPACE RADAR
+            <div className="mb-3 flex items-center justify-between">
+              <div className="flex items-center gap-2 text-xs font-mono tracking-[0.18em] text-muted-slate">
+                <Radar size={13} className="text-cyan-nebula" />
+                SPACE RADAR
+              </div>
+              <button
+                onClick={() => setIsOpen(false)}
+                className="flex h-6 w-6 items-center justify-center rounded-full border border-white/10 bg-white/5 text-muted-slate transition-colors hover:border-cyan-nebula/40 hover:text-text-white"
+                title="Collapse radar"
+              >
+                <Minus size={12} />
+              </button>
             </div>
             
             <div className="relative w-32 h-32 rounded-full border border-cosmic-violet/30 bg-space-black/50 overflow-hidden">
@@ -97,7 +107,7 @@ export default function SpaceRadar() {
               />
             </div>
             
-            <div className="text-center mt-2">
+            <div className="mt-2 text-center">
               <span className="text-xs font-mono" style={{ color: sectionPositions[currentSection]?.color }}>
                 {sectionPositions[currentSection]?.label}
               </span>
@@ -105,14 +115,16 @@ export default function SpaceRadar() {
           </motion.div>
         )}
       </AnimatePresence>
-      
-      {/* Toggle button */}
-      <button
-        onClick={() => setIsOpen(!isOpen)}
-        className="w-8 h-8 glass-panel flex items-center justify-center mt-2 ml-8"
-      >
-        <span className="text-xs font-mono text-cyan-nebula">{isOpen ? '−' : '+'}</span>
-      </button>
+
+      {!isOpen && (
+        <button
+          onClick={() => setIsOpen(true)}
+          className="glass-panel flex h-10 w-10 items-center justify-center"
+          title="Open radar"
+        >
+          <Radar size={16} className="text-cyan-nebula" />
+        </button>
+      )}
     </div>
   )
 }

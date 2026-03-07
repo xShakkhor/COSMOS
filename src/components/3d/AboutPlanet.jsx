@@ -35,27 +35,40 @@ const fragmentShader = `
   float noise(vec2 p) {
     return fract(sin(dot(p, vec2(12.9898, 78.233))) * 43758.5453);
   }
+
+  float fbm(vec2 p) {
+    float value = 0.0;
+    float amplitude = 0.5;
+
+    for (int i = 0; i < 4; i++) {
+      value += noise(p) * amplitude;
+      p *= 2.0;
+      amplitude *= 0.5;
+    }
+
+    return value;
+  }
   
   void main() {
     vec2 uv = vUv;
-    float time = uTime * 0.1;
+    float time = uTime * 0.08;
+    vec2 centeredUv = uv - 0.5;
+    float swirl = sin(atan(centeredUv.y, centeredUv.x) * 3.0 + length(centeredUv) * 8.0 - time * 2.0);
+    float terrain = fbm(uv * 4.0 + vec2(time * 0.6, -time * 0.3));
+    float bands = smoothstep(-0.45, 0.75, swirl * 0.35 + terrain * 0.95);
     
-    float n = noise(uv * 10.0 + time);
-    n += noise(uv * 20.0 - time * 0.5) * 0.5;
-    n += noise(uv * 40.0 + time * 0.25) * 0.25;
-    n /= 1.75;
+    vec3 color1 = vec3(0.05, 0.03, 0.14);
+    vec3 color2 = vec3(0.17, 0.08, 0.32);
+    vec3 color3 = vec3(0.44, 0.23, 0.85);
+    vec3 color4 = vec3(0.08, 0.63, 0.78);
     
-    vec3 color1 = vec3(0.1, 0.05, 0.2);
-    vec3 color2 = vec3(0.486, 0.227, 0.929);
-    vec3 color3 = vec3(0.024, 0.714, 0.831);
-    vec3 color4 = vec3(0.961, 0.620, 0.043);
-    
-    vec3 color = mix(color1, color2, smoothstep(0.0, 0.33, n));
-    color = mix(color, color3, smoothstep(0.33, 0.66, n));
-    color = mix(color, color4, smoothstep(0.66, 1.0, n));
+    vec3 color = mix(color1, color2, smoothstep(0.0, 0.28, bands));
+    color = mix(color, color3, smoothstep(0.28, 0.72, bands));
+    color = mix(color, color4, smoothstep(0.72, 1.0, bands));
+    color += palette(terrain + time * 0.15) * 0.06;
     
     float fresnel = pow(1.0 - dot(vNormal, vec3(0.0, 0.0, 1.0)), 2.0);
-    color += fresnel * vec3(0.486, 0.227, 0.929) * 0.5;
+    color += fresnel * vec3(0.486, 0.227, 0.929) * 0.35;
     
     gl_FragColor = vec4(color, 1.0);
   }

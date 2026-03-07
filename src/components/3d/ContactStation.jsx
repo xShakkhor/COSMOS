@@ -108,7 +108,7 @@ export default function ContactStation({ position, scale }) {
         </div>
       </Html>
       
-      <Html position={[0, 0, 2]} center>
+      <Html position={[0, 1.8, 1.2]} center>
         <button
           onClick={() => {
             setShowForm((prev) => {
@@ -117,15 +117,15 @@ export default function ContactStation({ position, scale }) {
               return next
             })
           }}
-          className="glass-panel px-6 py-3 text-text-white hover:bg-white/10 transition-colors"
+          className="glass-panel rounded-full px-4 py-2 text-sm font-mono tracking-[0.08em] text-text-white transition-colors hover:bg-white/10"
         >
-          {showForm ? 'Close Panel' : 'Open Transmission'}
+          {showForm ? 'Close Transmission' : 'Open Transmission'}
         </button>
       </Html>
       
       {showForm && (
-        <Html position={[3, 0, 0]} center>
-          <div className="glass-panel p-6 w-80">
+        <Html position={[3.6, 0.4, 0]} center>
+          <div className="glass-panel w-80 p-6">
             <h3 className="text-xl font-bold text-gradient mb-4">
               Transmission Panel
             </h3>

@@ -21,30 +21,35 @@ export default function MissionMode() {
   if (!isExplored) return null
 
   return (
-    <div className="absolute left-4 top-56 z-30 w-64 glass-panel p-3">
-      <div className="mb-2 flex items-center justify-between">
-        <span className="text-xs font-mono tracking-wider text-cyan-nebula">MISSION MODE</span>
+    <div className="absolute left-4 top-56 z-30 w-72 glass-panel px-4 py-3.5">
+      <div className="mb-3 flex items-center justify-between">
+        <div>
+          <span className="text-xs font-mono tracking-[0.24em] text-cyan-nebula">MISSION MODE</span>
+          <div className="mt-1 text-[10px] font-mono uppercase tracking-[0.22em] text-muted-slate">
+            Explorer objectives
+          </div>
+        </div>
         <span className={`text-xs font-mono ${isComplete ? 'text-plasma-green' : 'text-muted-slate'}`}>
           {completed}/{objectives.length}
         </span>
       </div>
 
-      <div className="mb-3 h-1.5 overflow-hidden rounded bg-white/10">
+      <div className="mb-4 h-1.5 overflow-hidden rounded-full bg-white/10">
         <div
-          className="h-full rounded bg-gradient-to-r from-cyan-nebula to-plasma-green transition-all duration-500"
+          className="h-full rounded-full bg-gradient-to-r from-cyan-nebula via-cosmic-violet to-plasma-green transition-all duration-500"
           style={{ width: `${progress}%` }}
         />
       </div>
 
-      <div className="space-y-2">
+      <div className="space-y-2.5">
         {objectives.map((item) => (
-          <div key={item.key} className="flex items-center gap-2 text-xs">
+          <div key={item.key} className="flex items-start gap-2.5 rounded-xl border border-white/8 bg-white/5 px-2.5 py-2 text-xs">
             <span
-              className={`inline-block h-2 w-2 rounded-full ${
+              className={`mt-1 inline-block h-2.5 w-2.5 rounded-full ${
                 mission[item.key] ? 'bg-plasma-green shadow-[0_0_10px_rgba(16,185,129,0.9)]' : 'bg-white/30'
               }`}
             />
-            <span className={mission[item.key] ? 'text-text-white' : 'text-muted-slate'}>{item.label}</span>
+            <span className={`leading-relaxed ${mission[item.key] ? 'text-text-white' : 'text-muted-slate'}`}>{item.label}</span>
           </div>
         ))}
       </div>

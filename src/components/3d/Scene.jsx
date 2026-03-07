@@ -16,7 +16,7 @@ const cameraPositions = {
   skills: [12, 0, 10],
   projects: [-8, 4, 12],
   experience: [8, -4, 12],
-  contact: [0, -6, 12]
+  contact: [-2, -6, 12]
 }
 
 export default function Scene() {
@@ -56,7 +56,7 @@ export default function Scene() {
   const aboutPos = isMobile ? [-4, 1, 0] : [-6, 0, 0]
   const skillsPos = isMobile ? [4, 1, -2] : [6, 0, -2]
   const experiencePos = isMobile ? [0, -4, 2] : [0, -6, 2]
-  const contactPos = isMobile ? [0, 5, -2] : [0, 6, -2]
+  const contactPos = isMobile ? [1.5, 5.5, -3.5] : [2.5, 6.5, -4.5]
   const aboutScale = isMobile ? 1.8 : 2.5
   const skillsScale = isMobile ? 1.2 : 1.5
   const experienceScale = isMobile ? 1 : 1.2
