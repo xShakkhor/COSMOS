@@ -9,12 +9,13 @@ function StatsMonitor() {
   const [memory, setMemory] = useState(0)
   const [isOpen, setIsOpen] = useState(false)
   const frameCount = useRef(0)
-  const lastTime = useRef(performance.now())
+  const lastTime = useRef(0)
 
   useEffect(() => {
     if (!isExplored) return
 
     let animationId
+    lastTime.current = performance.now()
     
     const updateStats = () => {
       frameCount.current++
@@ -39,14 +40,24 @@ function StatsMonitor() {
 
   if (!isExplored) return null
 
+  const bars = Array.from({ length: 20 }, (_, index) => {
+    const wave = ((fps + index * 7) % 20) / 20
+    const height = Math.min(100, fps * 1.25 + wave * 22)
+    return {
+      height,
+      opacity: 0.55 + wave * 0.35,
+      color: height >= 50 ? '#10B981' : height >= 30 ? '#F59E0B' : '#EF4444',
+    }
+  })
+
   return (
-    <div className="absolute top-16 left-4 z-30">
+    <div className="absolute top-16 right-4 z-30">
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            initial={{ opacity: 0, x: -20 }}
+            initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -20 }}
+            exit={{ opacity: 0, x: 20 }}
             className="glass-panel p-3 min-w-[140px]"
           >
             <div className="text-xs text-muted-slate font-mono mb-2 flex items-center gap-1">
@@ -90,20 +101,17 @@ function StatsMonitor() {
             
             {/* FPS Graph */}
             <div className="mt-3 h-8 flex items-end gap-px">
-              {Array.from({ length: 20 }).map((_, i) => {
-                const height = Math.min(100, fps * 1.5 + Math.random() * 20)
-                return (
-                  <div
-                    key={i}
-                    className="flex-1 rounded-sm"
-                    style={{
-                      height: `${height}%`,
-                      backgroundColor: height >= 50 ? '#10B981' : height >= 30 ? '#F59E0B' : '#EF4444',
-                      opacity: 0.5 + Math.random() * 0.5
-                    }}
-                  />
-                )
-              })}
+              {bars.map((bar, index) => (
+                <div
+                  key={index}
+                  className="flex-1 rounded-sm"
+                  style={{
+                    height: `${bar.height}%`,
+                    backgroundColor: bar.color,
+                    opacity: bar.opacity,
+                  }}
+                />
+              ))}
             </div>
           </motion.div>
         )}
@@ -111,7 +119,7 @@ function StatsMonitor() {
       
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="glass-panel w-8 h-8 flex items-center justify-center"
+        className="glass-panel w-8 h-8 flex items-center justify-center ml-auto"
       >
         <Activity size={16} className={isOpen ? 'text-plasma-green' : 'text-muted-slate'} />
       </button>
