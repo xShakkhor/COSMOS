@@ -13,40 +13,57 @@ export default function UserInfoPanel() {
     if (!isExplored) return
 
     const fetchUserInfo = async () => {
-      try {
-        const response = await fetch('https://ipapi.co/json/')
-        if (!response.ok) throw new Error('ipapi failed')
-        const data = await response.json()
-        
-        if (data.ip) {
-          setUserInfo(data)
-        } else {
-          throw new Error('No IP data')
-        }
-      } catch {
-        try {
-          const fallback = await fetch('http://ip-api.com/json/?fields=status,message,country,countryCode,city,timezone,isp,org,query')
-          if (fallback.ok) {
-            const data = await fallback.json()
-            if (data.status === 'success') {
-              setUserInfo({
-                ip: data.query,
+      const apis = [
+        {
+          url: 'https://ipwho.is/',
+          parser: (data) => {
+            if (data.success) {
+              return {
+                ip: data.ip,
                 city: data.city,
                 country: data.country,
-                country_code: data.countryCode,
-                timezone: data.timezone,
-                org: data.org || data.isp,
-              })
-            } else {
-              setUserInfo(null)
+                timezone: data.timezone?.id,
+                org: data.connection?.isp || data.connection?.org,
+              }
             }
-          } else {
-            setUserInfo(null)
+            return null
+          },
+        },
+        {
+          url: 'https://ipapi.co/json/',
+          parser: (data) => {
+            if (data.ip) {
+              return {
+                ip: data.ip,
+                city: data.city,
+                country: data.country_name,
+                timezone: data.timezone,
+                org: data.org,
+              }
+            }
+            return null
+          },
+        },
+      ]
+
+      for (const api of apis) {
+        try {
+          const response = await fetch(api.url)
+          if (response.ok) {
+            const data = await response.json()
+            const parsed = api.parser(data)
+            if (parsed && parsed.ip) {
+              setUserInfo(parsed)
+              setLoading(false)
+              return
+            }
           }
         } catch {
-          setUserInfo(null)
+          continue
         }
       }
+
+      setUserInfo(null)
       setLoading(false)
     }
 
